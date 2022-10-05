@@ -11,7 +11,7 @@ public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
     {
-        var baseAddress = "https://localhost:44314/";
+        var baseAddress = "http://192.168.0.117:10194/";
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
@@ -36,6 +36,7 @@ public static class MauiProgram
         builder.Services.AddScoped<IHttpService, HttpService>();
         builder.Services.AddScoped<IImagePostRepository, ImagePostRepository>();
         builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 
         builder.Services.AddSingleton<WeatherForecastService>();

@@ -1,4 +1,5 @@
-﻿@using Humanizer
+﻿@using A2Test2.Helpers
+@using Humanizer
 @inject IImagePostRepository postRepository
 
 <AuthorizeView>
@@ -64,7 +65,7 @@ else
             <span class="submitted-by">
                 <UsernameDisplay UserId="@comment.Commenter.Id" /> @DateTime.Now.Subtract(comment.PostTime.ToLocalTime()).Humanize() ago
             </span>
-            <p>@comment.CommentText</p>
+            <p>@comment.CommentText </p>
             <AuthorizeView>
                 <Authorized>
                     <div class="comment-actions">

@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+
+<AuthorizeView>
+    <Authorized>
+        <a href="auth/profile">Hello, @context.User.Identity.Name!</a>
+        <a href="/profile/view/@context.User.Claims.FirstOrDefault(x => x.Type == "sub").Value.ToString()">View Profile</a>
+        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+    </Authorized>
+    <NotAuthorized>
+        <a href="auth/register">Register</a>
+        <a href="auth/login">Log in</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string uid;
+
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("auth/logout");
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            var claims = user.Claims;
+            uid = claims.FirstOrDefault(x => x.Type == "sub").Value;
+        }
+    }
+}

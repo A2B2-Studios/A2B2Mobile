@@ -3,10 +3,15 @@
     <label>@Label</label>
 </p>
 <div class="custom-file col-6 mb-3">
-    <InputFile class="custom-file-input" accept=".jpg,.jpeg,.png" OnChange="OnChange" />
+    <InputFile class="custom-file-input" type="file" accept=".jpg,.jpeg,.png" OnChange="OnChange" />
     <label class="custom-file-label">Upload File..</label>
+
 </div>
 
+<p class="m-0">
+    <button type="button" @onclick="PickPhoto" class="btn btn-secondary">Choose from Device</button>
+
+</p>
 
 
 
@@ -37,6 +42,29 @@
             imageBase64 = Convert.ToBase64String(buffer);
             await OnSelectedImage.InvokeAsync(imageBase64);
             StateHasChanged();
+        }
+    }
+
+    async void PickPhoto()
+    {
+        if (MediaPicker.Default.IsCaptureSupported)
+        {
+            FileResult photo = await MediaPicker.Default.PickPhotoAsync();
+
+            if (photo != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    using Stream sourceStream = await photo.OpenReadAsync();
+                    sourceStream.CopyTo(memoryStream);
+                    var memArr = memoryStream.ToArray();
+                    imageBase64 = Convert.ToBase64String(memArr);
+                    await OnSelectedImage.InvokeAsync(imageBase64);
+                    StateHasChanged();
+                }
+                
+                
+            }
         }
     }
 }
