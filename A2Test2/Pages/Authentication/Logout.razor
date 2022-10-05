@@ -1,0 +1,16 @@
+﻿@page "/logout"
+
+@inject NavigationManager navigationManager
+@inject ILoginService loginService
+
+@using A2Test2.Authentication
+
+<text>Login out...</text>
+
+@code{
+    protected async override Task OnInitializedAsync()
+    {
+        await loginService.Logout();
+        navigationManager.NavigateTo("");
+    }
+}

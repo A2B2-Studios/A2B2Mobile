@@ -1,0 +1,55 @@
+﻿@inject IImagePostRepository postRepository
+@inject NavigationManager navMan
+
+<EditForm Model="Post" OnValidSubmit="Create">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Title</label>
+        <input type="text" class="form-control" @bind-value="Post.Title" placeholder="Title..." />
+    </div>
+    <div class="mb-3">
+        <label>Description</label>
+        <textarea @bind="Post.Description" class="form-control"></textarea>
+    </div>
+
+
+    <InputImg Label="Image" OnSelectedImage="OnSelectedImage" />
+
+    <button disabled="@disabled" type="submit" class="btn btn-primary">Submit</button>
+    <p style="color: red;">@status</p>
+</EditForm>
+
+@code {
+    private bool disabled = false;
+    private string status = "";
+
+    ImagePostDTO Post = new ImagePostDTO();
+
+
+    private async Task Create()
+    {
+        disabled = true;
+        status = "Submitting...";
+        var postresponse = await postRepository.CreatePost(Post);
+        if (postresponse == "BadImage")
+        {
+            status = "Something is wrong with your image. Please try again";
+            disabled = false;
+            return;
+        }
+        navMan.NavigateTo($"/post/view/{postresponse}");
+
+    }
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    private void OnSelectedImage(string imagebase64)
+    {
+        Post.ImageURL = imagebase64;
+    }
+
+}

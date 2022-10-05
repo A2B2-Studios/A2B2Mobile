@@ -1,0 +1,49 @@
+﻿@typeparam TItem
+
+@if (List == null)
+{
+    if (NullTemplate != null)
+    {
+        @NullTemplate
+    }
+    else
+    {
+        <span style="color: red">Loading...</span>
+    }
+}
+else if (List.Count == 0)
+{
+    @*<text>There are no records to show</text>*@
+    if (EmptyTemplate != null)
+    {
+        @EmptyTemplate
+    }
+    else
+    {
+        <span style="color: blue">There is nothing in the list.</span>
+    }
+}
+else
+{
+
+    @if (ElementTemplate != null)
+    {
+
+        @foreach (var element in List)
+        {
+            @ElementTemplate(element)
+        }
+    }
+    else
+    {
+        @WholeListTemplate
+    }
+}
+@code {
+    [Parameter] public RenderFragment NullTemplate { get; set; }
+    [Parameter] public RenderFragment EmptyTemplate { get; set; }
+    [Parameter] public RenderFragment<TItem> ElementTemplate { get; set; }
+    [Parameter] public RenderFragment WholeListTemplate { get; set; }
+    [Parameter] public List<TItem> List { get; set; }
+
+}

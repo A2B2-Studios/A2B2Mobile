@@ -1,0 +1,98 @@
+﻿@page "/"
+@using A2Test2.Repository
+@using A2Test2.DTOs.Posts
+@using A2Test2.DTOs
+@using Humanizer
+@using Humanizer.Localisation
+@inject IImagePostRepository postRepository
+@inject NavigationManager navMan
+
+<Pagination CurrentPage="@paginationDTO.Page" SelectedPage="SelectedPage" TotalAmountPages="totalAmountPages" />
+
+<br />
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-3">
+            <h3>News</h3>
+        </div>
+
+        <div class="col-md-6">
+            <GenericList List="Posts">
+                <WholeListTemplate>
+
+                    @foreach (var Post in Posts)
+                    {
+                        <div class="post-display">
+                            <div class="post-display-title">
+                                <h2><a href="/post/view/@Post.Id">@Post.Title</a></h2>
+                            </div>
+                            <span class="submitted-by">
+                                <span><small><a style="@Post.User.Style" href="/profile/view/@Post.User.Id">@Post.User.Username</a> - @DateTime.Now.Subtract(Post.PostTime.ToLocalTime()).Humanize(maxUnit: TimeUnit.Year, precision: 2) ago</small></span>
+                            </span>
+                            <div class="post-image">
+                                <img src="@Post.ImageURL" />
+                            </div>
+                            <a href="/post/view/@Post.Id">@Post.CommentCount Comments</a>
+                        </div>
+                    }
+
+                </WholeListTemplate>
+            </GenericList>
+        </div>
+
+        <div class="col-md-3">
+
+        </div>
+
+    </div>
+</div>
+<br />
+<Pagination CurrentPage="@paginationDTO.Page" SelectedPage="SelectedPage" TotalAmountPages="totalAmountPages" />
+
+<br />
+<br />
+
+@code
+{
+    [Parameter] public int Page { get; set; } = 1;
+    List<ImagePostDTO> Posts;
+    PaginationDTO paginationDTO = new PaginationDTO();
+    int totalAmountPages;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadPosts();
+    }
+
+    private async Task<int> SelectedPage(int page)
+    {
+        paginationDTO.Page = page;
+        Page = page;
+        Console.WriteLine(page);
+        Console.WriteLine(Page);
+        navMan.NavigateTo($"/page/{page}");
+        await LoadPosts();
+        return page;
+
+    }
+
+    private async Task LoadPosts()
+    {
+        if (Posts != null)
+        {
+            Posts = null;
+        }
+        if (Page < 1)
+        {
+            Page = 1;
+        }
+        paginationDTO.Page = Page;
+        var paginatedResponse = await postRepository.GetImagePostList(paginationDTO);
+        var response = paginatedResponse.Response;
+        response.Reverse();
+        Posts = response;
+        totalAmountPages = paginatedResponse.TotalAmountPages;
+        StateHasChanged();
+    }
+}

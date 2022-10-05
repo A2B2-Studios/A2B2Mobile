@@ -1,0 +1,47 @@
+﻿@page "/post/view/{PostId:int}"
+@inject IImagePostRepository imageRepository
+
+@if (post == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    
+    <div class="post-display">
+        <div class="post-display-title">
+            <h2>@post.Title</h2>
+        </div>
+        <span class="submitted-by">
+            <UsernameDisplay UserId="@post.User.Id" />
+        </span>
+        <div class="post-image">
+            <img src="@post.ImageURL" />
+        </div>
+
+        <A2B2.Client.Pages.Comment.CommentView PostId="PostId" ProvidedComments="post.Comments" />
+    </div>
+}
+
+
+@code {
+    [Parameter] public int PostId { get; set; }
+    public ImagePostDTO post;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        var response = await imageRepository.GetPostById(PostId);
+        if (response != null)
+        {
+            post = response;
+        }
+    }
+
+    private void OnCommentUpdated()
+    {
+        StateHasChanged();
+    }
+
+
+}

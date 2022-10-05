@@ -1,0 +1,193 @@
+﻿@using Humanizer
+@inject IImagePostRepository postRepository
+
+<AuthorizeView>
+
+    <Authorized>
+        <CommentBox OnValidSubmit="OnValidSubmit" PostId="PostId" />
+    </Authorized>
+    <NotAuthorized>
+        <LoginDisplay /> to comment.
+    </NotAuthorized>
+</AuthorizeView>
+
+
+<Modal @ref="modalRef">
+    <ModalContent Background="Background.Dark" Centered="true">
+        <ModalHeader>
+            <ModalTitle>Replying to: @CommenterUsername</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel>Reply</FieldLabel>
+                <br />
+                <textarea class="form-control" @bind="ReplyText"></textarea>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+            <Button Color="Color.Primary" Clicked="@PostReply">Submit</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="deleteModal">
+    <ModalContent Background="Background.Dark" Centered="true">
+        <ModalHeader>
+            <ModalTitle>Delete Comment</ModalTitle>
+            <CloseButton />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <p>Are you sure you want to delete this comment? This cannot be undone.</p>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@HideDeleteModal">Cancel</Button>
+            <Button Color="Color.Danger" Clicked="@DeleteComment">Delete</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+
+@if (Comments == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    @foreach (var comment in Comments)
+    {
+        <div class="comment-view">
+            <span class="submitted-by">
+                <UsernameDisplay UserId="@comment.Commenter.Id" /> @DateTime.Now.Subtract(comment.PostTime.ToLocalTime()).Humanize() ago
+            </span>
+            <p>@comment.CommentText</p>
+            <AuthorizeView>
+                <Authorized>
+                    <div class="comment-actions">
+                        <ul>
+                            <li><a @onclick="() => ShowModal(comment.Id)">Reply</a></li>
+                            @if (context.User.Claims.GetUserId() == comment.Commenter.Id)
+                            {
+                                <li><a @onclick="() => ShowDeleteModal(comment.Id)">Delete</a></li>
+                            }
+                        </ul>
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <small style="margin-bottom: 1px;"><LoginDisplay /> to comment.</small>
+                </NotAuthorized>
+            </AuthorizeView>
+
+        </div>
+        @foreach (var reply in comment.ReplyComments)
+        {
+            <div class="indented">
+                <div class="comment-view">
+                    <span class="submitted-by">
+                        <UsernameDisplay UserId="@reply.Commenter.Id" /> @DateTime.Now.Subtract(reply.PostTime.ToLocalTime()).Humanize() ago
+                    </span>
+                    <p>@reply.CommentText</p>
+                    <AuthorizeView>
+                        <Authorized>
+                            <small><a style="cursor: pointer; color: #6bd005" @onclick="() => ShowModal(comment.Id)">Reply</a></small>
+                        </Authorized>
+                        <NotAuthorized>
+                            <small style="margin-bottom: 1px;"><LoginDisplay /> to comment.</small>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
+            </div>
+        }
+    }
+
+}
+
+
+
+@code {
+    [Parameter] public List<CommentDTO> ProvidedComments { get; set; }
+    [Parameter] public int PostId { get; set; }
+
+    private List<CommentDTO> Comments;
+
+    private string CommenterUsername = "";
+    private int ReplyingCommentId;
+    private string ReplyText = "";
+    private int DeleteCommentId;
+
+    private void OnValidSubmit(CommentDTO comment)
+    {
+        Comments.Add(comment);
+        StateHasChanged();
+    }
+
+    protected override void OnInitialized()
+    {
+        Comments = ProvidedComments;
+    }
+
+    private Modal modalRef;
+    private Modal deleteModal;
+
+    private Task ShowModal(int CommentId)
+    {
+        ReplyingCommentId = CommentId;
+        CommenterUsername = Comments.Where(x => x.Id == CommentId).FirstOrDefault().Commenter.Username;
+        return modalRef.Show();
+    }
+
+    private Task ShowReplyModal(int CommentId, string username)
+    {
+        ReplyingCommentId = CommentId;
+        CommenterUsername = username;
+        return modalRef.Show();
+    }
+
+    private Task ShowDeleteModal(int CommentId)
+    {
+        DeleteCommentId = CommentId;
+        return deleteModal.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+
+    private Task HideDeleteModal()
+    {
+        return deleteModal.Hide();
+    }
+
+    private async Task DeleteComment()
+    {
+        await postRepository.DeleteComment(DeleteCommentId);
+        var c = Comments.Where(x => x.Id == DeleteCommentId).FirstOrDefault();
+        Comments.Remove(c);
+        
+        await HideDeleteModal();
+    }
+
+    private async Task PostReply()
+    {
+        var pcomment = Comments.Where(x => x.Id == ReplyingCommentId).FirstOrDefault();
+        ReplyCommentDTO reply = new ReplyCommentDTO
+        {
+            CommentText = ReplyText,
+            ParentComment = pcomment,
+            ParentPostId = PostId,
+        };
+        var newcomment = await postRepository.PostReply(reply);
+        var main = Comments.Where(x => x.Id == ReplyingCommentId).FirstOrDefault();
+        main.ReplyComments.Add(newcomment);
+        CommenterUsername = "";
+        ReplyingCommentId = 0;
+        ReplyText = "";
+        StateHasChanged();
+        await HideModal();
+    }
+
+}

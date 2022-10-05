@@ -1,0 +1,32 @@
+﻿@inject IImagePostRepository postRepository
+
+<EditForm Model="Comment" OnValidSubmit="onValidSubmit">
+    <div class="form-group">
+        <br />
+        <small>Comments</small>
+        <textarea type="text" class="form-control" @bind="Comment.CommentText" />
+
+
+        <button disabled="@disabled" type="submit" class="btn btn-primary">Submit</button>
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter] public EventCallback<CommentDTO> OnValidSubmit { get; set; }
+    [Parameter] public int PostId { get; set; }
+
+    private CommentDTO Comment = new CommentDTO();
+    private bool disabled = false;
+
+
+    private async Task onValidSubmit()
+    {
+        disabled = true;
+        Comment.ParentPostId = PostId;
+        var c = await postRepository.PostComment(Comment);
+        await OnValidSubmit.InvokeAsync(c);
+        Comment.CommentText = "";
+        disabled = false;
+    }
+}
