@@ -11,28 +11,38 @@
 
 <h3>Login</h3>
 
-<EditForm Model="userInfo" OnValidSubmit="CreateUser">
-    <DataAnnotationsValidator />
 
-    <div class="form-group">
-        <label>Email:</label>
-        <div>
-            <InputText class="form-control" @bind-Value="@userInfo.Email" />
-            <ValidationMessage For="@(() => userInfo.Email)" />
-        </div>
-    </div>
+<AuthorizeView>
+    <Authorized>
+        <p>You've already logged in!</p>
+    </Authorized>
+    <NotAuthorized>
+        <EditForm Context="logincontext" Model="userInfo" OnValidSubmit="CreateUser">
+            <DataAnnotationsValidator />
 
-    <div class="form-group">
-        <label>Password:</label>
-        <div>
-            <InputText type="password" class="form-control" @bind-Value="@userInfo.Password"/>
-            <ValidationMessage For="@(() => userInfo.Password)"/>
-        </div>
-    </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <div>
+                    <InputText class="form-control" @bind-Value="@userInfo.Email" />
+                    <ValidationMessage For="@(() => userInfo.Email)" />
+                </div>
+            </div>
 
-    <button type="submit" class="btn btn-primary">Login</button>
+            <div class="form-group">
+                <label>Password:</label>
+                <div>
+                    <InputText type="password" class="form-control" @bind-Value="@userInfo.Password" />
+                    <ValidationMessage For="@(() => userInfo.Password)" />
+                </div>
+            </div>
 
-</EditForm>
+            <button type="submit" class="btn btn-primary">Login</button>
+
+        </EditForm>
+    </NotAuthorized>
+</AuthorizeView>
+
+
 
 @code {
     private UserInfo userInfo = new UserInfo();

@@ -55,6 +55,9 @@ public static class MauiProgram
         //    provider => provider.GetRequiredService<JWTAuthenticationStateProvider>()
         //);
 
+        builder.Services.AddApiAuthorization()
+            .AddAccountClaimsPrincipalFactory<RolesClaimsPrincipalFactory>();
+
         builder.Services.AddScoped<JWTAuthenticationStateProvider>();
         builder.Services.AddScoped<AuthenticationStateProvider, JWTAuthenticationStateProvider>(
             provider => provider.GetRequiredService<JWTAuthenticationStateProvider>()

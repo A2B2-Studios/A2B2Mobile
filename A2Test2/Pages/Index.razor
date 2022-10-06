@@ -18,9 +18,24 @@
         </div>
 
         <div class="col-md-6">
+            <AuthorizeView>
+                <Authorized>
+                    <div class="post-display">
+                        <p>Welcome back, @context.User.Identity.Name</p>
+                        <a href="/logout">Log out</a>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+
+            <AuthorizeView Roles="Admin">
+                <Authorized>
+                    <p>You are an admin :)</p>
+                </Authorized>
+            </AuthorizeView>
+
+            <h3>Posts</h3>
             <GenericList List="Posts">
                 <WholeListTemplate>
-
                     @foreach (var Post in Posts)
                     {
                         <div class="post-display">
