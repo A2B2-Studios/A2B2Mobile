@@ -14,43 +14,9 @@
 </AuthorizeView>
 
 
-<Modal @ref="modalRef">
-    <ModalContent Background="Background.Dark" Centered="true">
-        <ModalHeader>
-            <ModalTitle>Replying to: @CommenterUsername</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <Field>
-                <FieldLabel>Reply</FieldLabel>
-                <br />
-                <textarea class="form-control" @bind="ReplyText"></textarea>
-            </Field>
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-            <Button Color="Color.Primary" Clicked="@PostReply">Submit</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
-
-<Modal @ref="deleteModal">
-    <ModalContent Background="Background.Dark" Centered="true">
-        <ModalHeader>
-            <ModalTitle>Delete Comment</ModalTitle>
-            <CloseButton />
-        </ModalHeader>
-        <ModalBody>
-            <Field>
-                <p>Are you sure you want to delete this comment? This cannot be undone.</p>
-            </Field>
-        </ModalBody>
-        <ModalFooter>
-            <Button Color="Color.Secondary" Clicked="@HideDeleteModal">Cancel</Button>
-            <Button Color="Color.Danger" Clicked="@DeleteComment">Delete</Button>
-        </ModalFooter>
-    </ModalContent>
-</Modal>
+<PopupModal @ref="deleteModalRef">
+    <ModalBody><p>My name jefff</p></ModalBody>
+</PopupModal>
 
 
 @if (Comments == null)
@@ -120,6 +86,8 @@ else
     private string ReplyText = "";
     private int DeleteCommentId;
 
+    PopupModal deleteModalRef;
+
     private void OnValidSubmit(CommentDTO comment)
     {
         Comments.Add(comment);
@@ -131,46 +99,25 @@ else
         Comments = ProvidedComments;
     }
 
-    private Modal modalRef;
-    private Modal deleteModal;
 
-    private Task ShowModal(int CommentId)
+    private void ShowDeleteModal(int commentId)
     {
-        ReplyingCommentId = CommentId;
-        CommenterUsername = Comments.Where(x => x.Id == CommentId).FirstOrDefault().Commenter.Username;
-        return modalRef.Show();
+        deleteModalRef.Open();
+
     }
 
-    private Task ShowReplyModal(int CommentId, string username)
-    {
-        ReplyingCommentId = CommentId;
-        CommenterUsername = username;
-        return modalRef.Show();
-    }
+    private void ShowModal(int commentId)
+        {
 
-    private Task ShowDeleteModal(int CommentId)
-    {
-        DeleteCommentId = CommentId;
-        return deleteModal.Show();
-    }
-
-    private Task HideModal()
-    {
-        return modalRef.Hide();
-    }
-
-    private Task HideDeleteModal()
-    {
-        return deleteModal.Hide();
-    }
+        }
 
     private async Task DeleteComment()
     {
         await postRepository.DeleteComment(DeleteCommentId);
         var c = Comments.Where(x => x.Id == DeleteCommentId).FirstOrDefault();
         Comments.Remove(c);
-        
-        await HideDeleteModal();
+
+        //await HideDeleteModal();
     }
 
     private async Task PostReply()
@@ -189,7 +136,7 @@ else
         ReplyingCommentId = 0;
         ReplyText = "";
         StateHasChanged();
-        await HideModal();
+        //await HideModal();
     }
 
 }
