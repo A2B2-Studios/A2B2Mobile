@@ -4,6 +4,8 @@ using A2Test2.Data;
 using A2Test2.Helpers;
 using A2Test2.Repository;
 using Microsoft.AspNetCore.Components.Authorization;
+using Blazorise;
+using Blazorise.Bootstrap;
 
 namespace A2Test2;
 
@@ -11,7 +13,7 @@ public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
     {
-        var baseAddress = "http://192.168.0.117:10194/";
+        var baseAddress = "http://192.168.0.117:5004/";
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
@@ -28,6 +30,11 @@ public static class MauiProgram
 		#if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
+
+        builder.Services
+            .AddBlazorise()
+            .AddBootstrapProviders();
+
 
         builder.Services.AddHttpClient<HttpClientWithoutToken>(
             client => client.BaseAddress = new Uri(baseAddress));

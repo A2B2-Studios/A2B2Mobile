@@ -1,0 +1,17 @@
+﻿.comment-view {
+    border-bottom: 1px solid #114600;
+    margin: .2em 0;
+}
+
+    .comment-view p {
+        margin: 0;
+        padding: 0;
+    }
+
+.submitted-by {
+    font-size: x-small;
+}
+
+.indented {
+    margin-left: 2em;
+}

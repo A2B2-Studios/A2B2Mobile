@@ -11,7 +11,7 @@ namespace A2Test2.Helpers
     {
         public static string GetUserId(this IEnumerable<Claim> claims)
         {
-            return claims.FirstOrDefault(x => x.Type == "sub").Value.ToString();
+            return claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value.ToString();
         }
     }
 }
