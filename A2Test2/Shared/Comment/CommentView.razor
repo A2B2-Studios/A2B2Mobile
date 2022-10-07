@@ -128,7 +128,8 @@ else
 
     protected override void OnInitialized()
     {
-        Comments = ProvidedComments;
+        Comments = ProvidedComments.OrderByDescending(x => x.PostTime).ToList();
+
     }
 
 

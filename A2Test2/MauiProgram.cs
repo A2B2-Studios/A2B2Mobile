@@ -13,8 +13,10 @@ public static class MauiProgram
 {
 	public static MauiApp CreateMauiApp()
     {
-        var baseAddress = "http://192.168.0.117:5004/";
-		var builder = MauiApp.CreateBuilder();
+        
+        var baseAddress = "https://beta.a2b2.org/";
+
+        var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
 			.ConfigureFonts(fonts =>
@@ -27,7 +29,7 @@ public static class MauiProgram
         });
 
         builder.Services.AddMauiBlazorWebView();
-		#if DEBUG
+#if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
