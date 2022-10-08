@@ -4,8 +4,7 @@ using A2Test2.Data;
 using A2Test2.Helpers;
 using A2Test2.Repository;
 using Microsoft.AspNetCore.Components.Authorization;
-using Blazorise;
-using Blazorise.Bootstrap;
+
 
 namespace A2Test2;
 
