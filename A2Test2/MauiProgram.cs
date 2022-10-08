@@ -14,7 +14,7 @@ public static class MauiProgram
 	public static MauiApp CreateMauiApp()
     {
         
-        var baseAddress = "http://192.168.0.117:5004/";
+        var baseAddress = "https://beta.a2b2.org/";
 
         var builder = MauiApp.CreateBuilder();
 		builder
