@@ -33,9 +33,6 @@ public static class MauiProgram
 		builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
-        builder.Services
-            .AddBlazorise()
-            .AddBootstrapProviders();
 
 
         builder.Services.AddHttpClient<HttpClientWithoutToken>(
