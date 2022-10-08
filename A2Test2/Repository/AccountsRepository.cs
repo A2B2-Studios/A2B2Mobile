@@ -25,7 +25,8 @@ namespace A2Test2.Repository
 
             if (!httpResponse.Success)
             {
-                throw new ApplicationException(await httpResponse.GetBody());
+                var body = httpResponse.GetBody().Result;
+                return(new UserToken() { ErrorMessage = body });
             }
 
             return httpResponse.Response;
@@ -35,9 +36,12 @@ namespace A2Test2.Repository
         {
             var httpResponse = await httpService.Post<UserInfo, UserToken>($"{baseURL}/login", userInfo);
 
-            if (!httpResponse.Success)
+            if (httpResponse.ResponseStatusCode == 401)
             {
-                throw new ApplicationException(await httpResponse.GetBody());
+                return new UserToken()
+                {
+                    Token = "failed"
+                };
             }
 
             return httpResponse.Response;

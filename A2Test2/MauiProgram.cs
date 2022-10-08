@@ -14,7 +14,7 @@ public static class MauiProgram
 	public static MauiApp CreateMauiApp()
     {
         
-        var baseAddress = "https://beta.a2b2.org/";
+        var baseAddress = "http://192.168.0.117:5004/";
 
         var builder = MauiApp.CreateBuilder();
 		builder
@@ -40,7 +40,7 @@ public static class MauiProgram
 
         builder.Services.AddHttpClient<HttpClientWithoutToken>(
             client => client.BaseAddress = new Uri(baseAddress));
-
+        SecureStorage.Default.RemoveAll();
 
         builder.Services.AddScoped<IHttpService, HttpService>();
         builder.Services.AddScoped<IImagePostRepository, ImagePostRepository>();

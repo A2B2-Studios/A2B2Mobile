@@ -1,0 +1,135 @@
+﻿@page "/profile/view/{UserID}"
+@inject IUserRepository userRepository
+
+
+
+@if (userProfile == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="container">
+        <table class="table table-dark">
+            <!--
+            <tr>
+                <td class="userprofile-header" colspan="2">
+                    <strong>User Info</strong>
+                </td>
+            </tr>
+            -->
+            <tr class="trow1">
+                <td class="userprofile-body" width="75%">
+                    <p style="font-size: 2rem;@userProfile.UsernameStyle.Style;"><strong>@userProfile.Username</strong></p>
+                    <p>
+                        <small style="@userProfile.UsernameStyle.Style">
+                            @foreach (var role in userProfile.Roles)
+                            {
+                                @role
+
+                                <br />
+                            }
+                        </small>
+                    </p>
+                    <p>@userProfile.Bio</p>
+                    <p>
+                        <b>Registration Date:</b> @userProfile.RegisterDate.ToLocalTime()
+                    </p>
+                    <p>
+                        <b>Last Sign-In:</b> @userProfile.LastActive.ToLocalTime()
+                    </p>
+
+                </td>
+                <td class="userprofile-picture" width="25%">
+                    <img src="@userProfile.ProfilePictureURL" />
+                </td>
+            </tr>
+        </table>
+        @if (userProfile.BountySubmissions == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <table class="table table-dark">
+                <tr>
+                    <td class="userprofile-header" colspan="2">
+                        <strong>Recent Bounty Submissions</strong>
+                    </td>
+                </tr>
+                <tr class="trow1">
+                    <td colspan="2">
+                        <div class="profile-bountysubmissions">
+                            @foreach (var submission in userProfile.BountySubmissions)
+                            {
+                                //<a href="/bounty/view/submission/@submission.Id">@submission.Title</a>
+                                if (submission.Type == 1)
+                                {
+                                    <div class="profile-bountysubmissions-submission">
+                                        <a href="/bounty/view/submission/@submission.Id">
+                                            <img class="imagepost-preview" src="@submission.GetImageThumbnail()" style="max-width: 128px;" />
+
+                                            <p>@submission.Title</p>
+                                        </a>
+
+
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        }
+        @if (userProfile.Posts == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+
+            <table class="table table-dark">
+                <tr>
+                    <td class="userprofile-header" colspan="3">
+                        <strong>Recent Posts</strong>
+                    </td>
+                </tr>
+                @foreach (var post in userProfile.Posts)
+                {
+                    <tr class="trow1">
+                        <td><a href="/post/view/@post.Id"><img class="imagepost-preview" src="@post.GetImageThumbnail()" /></a></td>
+                        <td><a href="/post/view/@post.Id">@post.Title</a></td>
+                    </tr>
+                }
+            </table>
+        }
+
+    </div>
+}
+
+
+@code {
+    [Parameter] public string UserID { get; set; }
+
+    private UserProfileDTO userProfile;
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(UserID))
+        {
+            var response = await userRepository.GetUserProfileById(UserID);
+
+            if (response == null)
+            {
+                response = await userRepository.GetUserProfileByName(UserID);
+            }
+            userProfile = response;
+            if (userProfile != null)
+            {
+                userProfile.Posts.Reverse();
+            }
+        }
+    }
+
+
+}

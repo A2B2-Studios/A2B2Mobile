@@ -1,0 +1,31 @@
+﻿
+
+.userprofile-header {
+    /* background: #0d0d0d; */
+    font-size: 13px;
+    background: #6bd005;
+    /* height: 30px; */
+    /* line-height: 29px; */
+    font-weight: bold;
+    box-shadow: 0 0 16px 2px rgba(30, 220, 30, 0.7);
+    /* border-radius: 16px; */
+    /* margin: 2px; */
+}
+
+.trow1 {
+    background: #363636;
+    border-bottom: 1px solid #0d0d0d;
+}
+
+td p {
+    margin-bottom: 0;
+}
+
+.userprofile-picture {
+    text-align: right;
+}
+
+    .userprofile-picture img {
+        max-width: 128px;
+        max-height: 128px;
+    }

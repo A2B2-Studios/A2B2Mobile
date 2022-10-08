@@ -9,16 +9,24 @@
 @using A2Test2.Repository
 @using A2Test2.DTOs
 
-<h3>Login</h3>
 
 
 <AuthorizeView>
     <Authorized>
-        <p>You've already logged in!</p>
+        <div class="container bg-dark rounded p-4 border-top border-bottom border-primary mb-lg-5">
+            <p>You've already logged in! <a href="/">Return home</a></p>
+
+        </div>
     </Authorized>
     <NotAuthorized>
-        <EditForm Context="logincontext" Model="userInfo" OnValidSubmit="CreateUser">
+
+        <div class="container bg-dark rounded p-4 border-top border-bottom border-primary mb-lg-5">
+            <h3>Login</h3>
+
+            <EditForm  Context="logincontext" Model="userInfo" OnValidSubmit="CreateUser">
             <DataAnnotationsValidator />
+
+            <p style="color: red;">@failureMessage</p>
 
             <div class="form-group">
                 <label>Username:</label>
@@ -39,6 +47,8 @@
             <button type="submit" class="btn btn-primary">Login</button>
 
         </EditForm>
+        </div>
+
     </NotAuthorized>
 </AuthorizeView>
 
@@ -47,9 +57,20 @@
 @code {
     private UserInfo userInfo = new UserInfo();
 
+    private string failureMessage = "";
+
     private async Task CreateUser()
     {
+        failureMessage = "";
         var userToken = await accountsRepository.Login(userInfo);
+
+        if (userToken.Token == "failed")
+        {
+            failureMessage = "The username or password is incorrect.";
+            StateHasChanged();
+            return;
+        }
+
         await loginService.Login(userToken.Token);
         navigationManager.NavigateTo("");
     }

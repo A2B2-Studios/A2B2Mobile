@@ -1,11 +1,13 @@
 ﻿@inject IImagePostRepository postRepository
 
 <EditForm Model="Comment" OnValidSubmit="onValidSubmit">
+    <DataAnnotationsValidator />
+
     <div class="form-group">
         <br />
         <small>Comments</small>
         <textarea type="text" class="form-control" @bind="Comment.CommentText" />
-
+        <ValidationMessage For="@(() => Comment.CommentText)"></ValidationMessage>
 
         <button disabled="@disabled" type="submit" class="btn btn-primary">Submit</button>
     </div>

@@ -32,6 +32,7 @@
         Reply to @CommenterUsername
     </ModalTitle>
     <ModalBody>
+        <p style="color: red;">@replyCommentMessage</p>
         <Label>Reply</Label>
         <textarea @bind="ReplyText" class="form-control"></textarea>
     </ModalBody>
@@ -116,6 +117,7 @@ else
     private int ReplyingCommentId;
     private string ReplyText = "";
     private int DeleteCommentId;
+    private string replyCommentMessage = "";
 
     PopupModal deleteModalRef;
     PopupModal replyModalRef;
@@ -170,6 +172,17 @@ else
     private async Task PostReply()
     {
         var pcomment = Comments.Where(x => x.Id == ReplyingCommentId).FirstOrDefault();
+        replyCommentMessage = "";
+        if (string.IsNullOrWhiteSpace(ReplyText))
+        {
+            replyCommentMessage = "You cannot post an empty comment";
+            return;
+        }
+        if (ReplyText.Length > 2000)
+        {
+            replyCommentMessage = "Your comment cannot exceed 2000 characters.";
+            return;
+        }
         ReplyCommentDTO reply = new ReplyCommentDTO
         {
             CommentText = ReplyText,

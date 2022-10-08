@@ -375,6 +375,10 @@ footer, ul {
         width: auto;
     }
 
+    body {
+        margin-top: 2rem;
+    }
+
     .bounties-open {
         text-align: center;
         margin-top: 8px;
