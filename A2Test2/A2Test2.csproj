@@ -38,6 +38,15 @@
       <CodesignKey>Apple Development: Created via API (L3Z6V5B2KK)</CodesignKey>
       <CodesignProvision>VS: WildCard Development</CodesignProvision>
     </PropertyGroup>
+	
+	<PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
+        <AndroidKeyStore>True</AndroidKeyStore>
+        <AndroidSigningKeyStore>A2B2.keystore</AndroidSigningKeyStore>
+        <AndroidSigningKeyAlias>A2B2</AndroidSigningKeyAlias>
+        <AndroidSigningKeyPass></AndroidSigningKeyPass>
+        <AndroidSigningStorePass></AndroidSigningStorePass>
+    </PropertyGroup>
+
 
     <ItemGroup>
         <!-- App Icon -->
