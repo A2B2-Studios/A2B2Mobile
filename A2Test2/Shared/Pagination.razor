@@ -1,4 +1,7 @@
-﻿<div>
+﻿@using A2Test2.Helpers
+@inject IAudioPlayerService audioManager
+
+<div>
     <ul class="pagination justify-content-center">
         @foreach (var link in links)
         {
@@ -23,6 +26,7 @@
     {
         if (link.Page == CurrentPage)
         {
+            await audioManager.PlayUISound("wet1.ogg");
             return;
         }
 

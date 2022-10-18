@@ -1,4 +1,6 @@
-﻿
+﻿@using A2Test2.Helpers
+@inject IAudioPlayerService audioManager
+
 <p class="m-0">
     <label>@Label</label>
 </p>
@@ -41,6 +43,8 @@
 
     async void PickPhoto()
     {
+        await audioManager.PlayUISound("tick1.ogg");
+
         if (MediaPicker.Default.IsCaptureSupported)
         {
             FileResult photo = await MediaPicker.Default.PickPhotoAsync();

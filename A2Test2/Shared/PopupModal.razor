@@ -1,4 +1,7 @@
-﻿<div class="modal fade @classText" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: @modalDisply">
+﻿@using A2Test2.Helpers
+@inject IAudioPlayerService audioManager
+
+<div class="modal fade @classText" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: @modalDisply">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -37,6 +40,7 @@
 
     public void Open()
     {
+        audioManager.PlayUISound("notify3.ogg");
         classText = "show";
         modalDisply = "block;";
         showBackdrop = true;

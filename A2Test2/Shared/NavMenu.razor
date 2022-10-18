@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using A2Test2.Helpers
+@inject IAudioPlayerService audioManager
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">A2Test2</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -9,19 +12,19 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <div class="nav-item px-3">
+        <div class="nav-item px-3" @onclick="@(() => audioManager.PlayUISound("tick1.ogg"))">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
         <AuthorizeView>
             <NotAuthorized>
-                <div class="nav-item px-3">
+                <div class="nav-item px-3" @onclick="@(() => audioManager.PlayUISound("notify3.ogg"))">
                     <NavLink class="nav-link" href="login">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Login
                     </NavLink>
                 </div>
-                <div class="nav-item px-3">
+                <div class="nav-item px-3" @onclick="@(() => audioManager.PlayUISound("tick1.ogg"))">
                     <NavLink class="nav-link" href="register">
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Register
                     </NavLink>
@@ -52,6 +55,13 @@
     private bool collapseNavMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await audioManager.AddUISound("tick1.ogg", 0.5, 1);
+        await audioManager.AddUISound("notify3.ogg", 0.7, 1);
+        await audioManager.AddUISound("wet1.ogg", 0.5, 1);
+    }
 
     private void ToggleNavMenu()
     {

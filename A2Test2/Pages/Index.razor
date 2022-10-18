@@ -3,10 +3,12 @@
 @using A2Test2.Repository
 @using A2Test2.DTOs.Posts
 @using A2Test2.DTOs
+@using A2Test2.Helpers
 @using Humanizer
 @using Humanizer.Localisation
 @inject IImagePostRepository postRepository
 @inject NavigationManager navMan
+@inject IAudioPlayerService audioManager
 
 <A2Test2.Shared.Pagination CurrentPage="@paginationDTO.Page" SelectedPage="SelectedPage" TotalAmountPages="totalAmountPages" />
 
@@ -40,13 +42,13 @@
                     @foreach (var Post in Posts)
                     {
                         <div class="post-display">
-                            <div class="post-display-title">
+                            <div class="post-display-title" @onclick="@(() => audioManager.PlayUISound("tick1.ogg"))">
                                 <h2><a href="/post/view/@Post.Id">@Post.Title</a></h2>
                             </div>
                             <span class="submitted-by">
                                 <span><small><a style="@Post.User.Style" href="/profile/view/@Post.User.Id">@Post.User.Username</a> - @DateTime.Now.Subtract(Post.PostTime.ToLocalTime()).Humanize(maxUnit: TimeUnit.Year, precision: 2) ago</small></span>
                             </span>
-                            <div class="post-image">
+                            <div class="post-image" @onclick="@(() => audioManager.PlayUISound("tick1.ogg"))">
                                 <img src="@Post.ImageURL" />
                             </div>
                             <a href="/post/view/@Post.Id">@Post.CommentCount Comments</a>

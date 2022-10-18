@@ -4,7 +4,7 @@ using A2Test2.Data;
 using A2Test2.Helpers;
 using A2Test2.Repository;
 using Microsoft.AspNetCore.Components.Authorization;
-
+using Plugin.Maui.Audio;
 
 namespace A2Test2;
 
@@ -39,11 +39,12 @@ public static class MauiProgram
         SecureStorage.Default.RemoveAll();
 
         builder.Services.AddScoped<IHttpService, HttpService>();
+        builder.Services.AddScoped<IAudioPlayerService, AudioPlayerService>();
         builder.Services.AddScoped<IImagePostRepository, ImagePostRepository>();
         builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-
+        builder.Services.AddSingleton(AudioManager.Current);
         builder.Services.AddSingleton<WeatherForecastService>();
 
         builder.Services.AddAuthorizationCore();
