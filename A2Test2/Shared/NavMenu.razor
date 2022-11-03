@@ -56,13 +56,6 @@
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await audioManager.AddUISound("tick1.ogg", 0.5, 1);
-        await audioManager.AddUISound("notify3.ogg", 0.7, 1);
-        await audioManager.AddUISound("wet1.ogg", 0.5, 1);
-    }
-
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;

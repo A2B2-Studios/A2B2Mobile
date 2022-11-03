@@ -39,7 +39,7 @@ public static class MauiProgram
         SecureStorage.Default.RemoveAll();
 
         builder.Services.AddScoped<IHttpService, HttpService>();
-        builder.Services.AddScoped<IAudioPlayerService, AudioPlayerService>();
+        builder.Services.AddSingleton<IAudioPlayerService, AudioPlayerService>();
         builder.Services.AddScoped<IImagePostRepository, ImagePostRepository>();
         builder.Services.AddScoped<IAccountsRepository, AccountsRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
