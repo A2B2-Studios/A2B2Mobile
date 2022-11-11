@@ -1,23 +1,30 @@
 ﻿@using A2Test2.Helpers
 @inject IAudioPlayerService audioManager
+@inject IJSRuntime JS
 
-<h3></h3>
+<div class="container-fluid" @onclick="@(e => audioManager.ShouldPlayInterop(e, JS))"></div>
 
 @code {
-    string[] sfxNames = { "tick1.ogg", "notify3.ogg", "wet1.ogg" };
+    [Parameter]
+    public bool muted { get; set; } = false;
+
+    string[] sfxNames = { "tick1.ogg", "notify3.ogg", "wet1.ogg" }; //TODO --> Make into objects
 
     protected override async Task OnAfterRenderAsync(bool firsRender)
     {
-        foreach (string name in sfxNames)
+        if (muted == false) 
         {
-            if (audioManager.PlayerExists(name).Result)
+            foreach (string name in sfxNames)
             {
-                await audioManager.RemovePlayer(name);
-                await audioManager.AddPlayer(name, 0.5, 1);
-            }
-            else
-            {
-                await audioManager.AddPlayer(name, 0.5, 1);
+                if (audioManager.PlayerExists(name).Result) //If we dont dispose the players they fuck up
+                {
+                    await audioManager.RemovePlayer(name);
+                    await audioManager.AddPlayer(name, 0.5, 1);
+                }
+                else
+                {
+                    await audioManager.AddPlayer(name, 0.5, 1);
+                }
             }
         }
     }

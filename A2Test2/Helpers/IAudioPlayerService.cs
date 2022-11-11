@@ -1,4 +1,6 @@
-﻿using Plugin.Maui.Audio;
+﻿using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
+using Plugin.Maui.Audio;
 using System.Threading.Tasks;
 
 namespace A2Test2.Helpers
@@ -10,5 +12,6 @@ namespace A2Test2.Helpers
         Task<bool> PlayerExists(string name);
         Task<IAudioPlayer> GetPlayer(string name);
         Task RemovePlayer(string name);
+        Task ShouldPlayInterop(MouseEventArgs e, IJSRuntime? jsInstance);
     }
 }

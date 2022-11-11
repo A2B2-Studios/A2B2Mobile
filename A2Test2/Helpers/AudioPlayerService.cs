@@ -1,4 +1,6 @@
-﻿using Microsoft.JSInterop;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using Plugin.Maui.Audio;
 using System.Threading.Tasks;
 
@@ -45,10 +47,24 @@ namespace A2Test2.Helpers
             audioPlayers.Remove(name);
         }
 
+        public async Task ShouldPlayInterop(MouseEventArgs e, IJSRuntime? jsInstance)
+        {
+            if (jsInstance != null)
+            {
+                string sfxToPlay = await jsInstance.InvokeAsync<string>("ShouldPlaySfx", e.ClientX, e.ClientY);
+
+                if (sfxToPlay != "false")
+                {
+                    await PlayUISound(sfxToPlay);
+                }
+            }
+        }
+
         public async Task PlayUISound(string name)
         {
             var sfxPlayer = audioPlayers[name];
             sfxPlayer.Play();
         }
+
     }
 }
